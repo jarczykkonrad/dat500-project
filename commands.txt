@@ -1,0 +1,25 @@
+// running namenode with gateway on 9870
+ ssh namenode -L 19888:localhost:19888
+
+// checking number of lines of datasets
+wc -l books_data.txt books_rating.txt
+
+// making demo versions of files with first 10000 lines
+head -n 50 books_data.txt > books_demo.txt
+head -n 10000 books_rating.txt > rating_demo.txt
+
+// making directory in hadoop
+hadoop fs -mkdir /project
+
+// put files to hadoop fs
+hadoop fs -put project/data_sets/*.txt /project
+
+// put txt to cvs file to hadoop file system
+hadoop fs -put project/code/txt_to_csv.py /project
+
+
+// get files from hadoop fs to folder
+hadoop fs -get /user/hadoop/hdfsfile.txt localfile.txt
+
+// running hadoop mrjob
+python3 project/code/txt_to_csv.py  --hadoop-streaming-jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar     -r hadoop hdfs:///project/book_demo.txt   --output-dir hdfs:///project/output
